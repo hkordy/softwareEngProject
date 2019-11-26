@@ -1,4 +1,4 @@
-package MySQLDemo;
+package softwareEngProject;
 
 // -- download MySQL from: http://dev.mysql.com/downloads/
 //    Community Server version

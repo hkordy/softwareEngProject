@@ -1,4 +1,4 @@
-package BasicClientServer;
+package softwareEngProject;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;

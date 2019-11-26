@@ -1,4 +1,4 @@
-package BasicClientServer;
+package softwareEngProject;
 
 
 
@@ -54,6 +54,9 @@ public class Server {
 		//    what is going on
 		System.out.println("SERVER: connection received for id " + nextId + "\n");
 		++nextId;
+
+		new serverGUI();
+
 	}
 	
 		
@@ -110,7 +113,8 @@ public class Server {
 	{
 		// -- instantiate the server anonymously
 		//    no need to keep a reference to the object since it will run in its own thread
-		new Server();		
+		new Server();
+
 		
 	}
 
