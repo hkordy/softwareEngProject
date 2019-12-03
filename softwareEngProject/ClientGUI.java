@@ -1,4 +1,4 @@
-package Client;
+package softwareEngProject;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -31,6 +31,7 @@ public class ClientGUI extends JFrame {
 	private ControlPanel cp;
 	private LoginPanel lp;
 	private RegisterPanel rp;
+	private Client client;
 
 	public ClientGUI(int height, int width) {
 
@@ -77,21 +78,37 @@ public class ClientGUI extends JFrame {
 			loginButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					lp.setVisible(true);
+					
 					rp.setVisible(false);
+
 
 				}
 			});
 			JButton registerButton = new JButton("Register");
 			registerButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					lp.setVisible(false);
-					rp.setVisible(true);
+					lp.setEnabled(false);
+					rp.setEnabled(true);
 
 				}
 			});
 			JButton disconnectButton = new JButton("Disconnect");
 			disconnectButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
+					client.disconnect();
+
+				}
+			});
+			JButton connectButton = new JButton("Connect");
+			add(connectButton);
+			connectButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent actionEvent) {
+					client = new Client();
+					connectButton.setEnabled(false);
+					disconnectButton.setEnabled(true);
+					loginButton.setEnabled(true);
+					registerButton.setEnabled(true);
 
 				}
 			});
@@ -100,6 +117,11 @@ public class ClientGUI extends JFrame {
 			add(loginButton);
 			add(registerButton);
 			add(disconnectButton);
+			disconnectButton.setEnabled(false);
+			loginButton.setEnabled(false);
+			registerButton.setEnabled(false);
+			add(connectButton);
+
 
 		}
 
@@ -147,6 +169,7 @@ public class ClientGUI extends JFrame {
 			JTextField username = new JTextField();
 			JTextField password = new JTextField();
 			JTextField email = new JTextField();
+
 
 			this.add(em);
 			this.add(email);

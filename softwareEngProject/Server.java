@@ -32,7 +32,7 @@ public class Server {
 	{
 		
 		// -- construct the list of active client threads
-		clientconnections = new Vector<ClientHandler>();
+		clientconnections = new Vector<>();
 
 		// -- listen for incoming connection requests
 		listen();

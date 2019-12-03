@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import static softwareEngProject.MessageEnum.FAILEDIO;
+
 public class Client {
 
 	// -- port and host name of server
@@ -23,7 +25,7 @@ public class Client {
      Subnet Mask . . . . . . . . . . . : 255.255.240.0
      Default Gateway . . . . . . . . . : 199.107.210.2
 	 */
-    private static final String HOST = "localhost";//"199.107.222.115";//"localhost";//"127.0.0.1";
+    private static final String HOST = "10.100.41.99";//"199.107.222.115";//"localhost";//"127.0.0.1";
 	// -- the actual host IP address of the machine can
 	//    be found using ipconfig from a command console
 	// private final String HOST = "192.168.20.4";
@@ -50,6 +52,7 @@ public class Client {
 			System.out.println("Host " + HOST + " at port " + PORT + " is unavailable.");
 			System.exit(1);
 		} catch (IOException e) {
+
 			System.out.println("Unable to create I/O streams.");
 			System.exit(1);
 		}
@@ -118,7 +121,7 @@ public class Client {
 		String commandString;
 		String replyString;
 		
-		for (int i = 0; i < 10; ++i) {
+		/*for (int i = 0; i < 10; ++i) {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
@@ -130,7 +133,7 @@ public class Client {
 			replyString = client.sendString(commandString);
 			System.out.println("CLIENT receive: " + replyString);
 		}
-
+*/
 		client.disconnect();
 	}
 
