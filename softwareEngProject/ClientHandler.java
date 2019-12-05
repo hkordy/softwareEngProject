@@ -1,4 +1,4 @@
-package softwareEngProject;
+package BasicClientServer;
 
 
 import java.io.BufferedReader;

@@ -1,4 +1,4 @@
-package softwareEngProject;
+package BasicClientServer;
 
 
 
@@ -54,9 +54,6 @@ public class Server {
 		//    what is going on
 		System.out.println("SERVER: connection received for id " + nextId + "\n");
 		++nextId;
-
-		new serverGUI();
-
 	}
 	
 		
@@ -104,7 +101,6 @@ public class Server {
 		catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);
-			
 		}
 	}
 	
@@ -115,7 +111,6 @@ public class Server {
 		//    no need to keep a reference to the object since it will run in its own thread
 		new Server();
 
-		
 	}
 
 
