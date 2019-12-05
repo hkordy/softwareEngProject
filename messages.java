@@ -3,7 +3,7 @@ package BasicClientServer;
 public class messages{
 
 	String message;
-
+	String test;
 	public String getFailedConnection() {
 		return message = "Connection Faild, please try again";
 	}
