@@ -1,11 +1,14 @@
-package BasicClientServer;
-
+package ClientServerProject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 
 
@@ -55,6 +58,50 @@ public class ClientHandler extends Thread {
 	public String getname ()
 	{
 		return name;
+	}
+	
+	public static void LogInUser(String name) throws SQLException
+	{
+		DBaseConnection dbc = new DBaseConnection();
+		Statement stmt = dbc.getStmt();
+		ResultSet rset = dbc.getRset();
+		//rset = stmt.executeQuery("SELECT * FROM users");
+		//dbc.printResultSet(rset);
+		//ResultSetMetaData rsmd = rset.getMetaData();
+		String update = "update users set logged='1' where username='" + name + "';";
+        stmt.executeUpdate(update);
+        rset = stmt.executeQuery("SELECT * FROM users");
+        dbc.printResultSet(rset);
+	}
+	
+	public static void RegisterUser(String uname, String pword, String emailaddr) throws SQLException
+	{
+		DBaseConnection dbc = new DBaseConnection();
+		Statement stmt = dbc.getStmt();
+		ResultSet rset = dbc.getRset();
+		//rset = stmt.executeQuery("SELECT * FROM users");
+		//dbc.printResultSet(rset);
+		//ResultSetMetaData rsmd = rset.getMetaData();
+		String insert = "insert into users values('" + uname + "', '" + pword + "', '" + emailaddr + "', " + 0 + ", " + 0 + ");";
+//      System.out.println(insert);
+        stmt.executeUpdate(insert);   
+        rset = stmt.executeQuery("SELECT * FROM users");
+        dbc.printResultSet(rset);
+	}
+	
+	public static void Disconnect(String uname) throws SQLException
+	{
+		DBaseConnection dbc = new DBaseConnection();
+		Statement stmt = dbc.getStmt();
+		ResultSet rset = dbc.getRset();
+		//rset = stmt.executeQuery("SELECT * FROM users");
+		//dbc.printResultSet(rset);
+		//ResultSetMetaData rsmd = rset.getMetaData();
+		String update = "update users set logged='0' where username='" + uname + "';";
+        stmt.executeUpdate(update);
+        System.out.println("Username " + uname + " is now disconnected");
+        rset = stmt.executeQuery("SELECT * FROM users");
+        dbc.printResultSet(rset);
 	}
 
 

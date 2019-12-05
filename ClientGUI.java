@@ -1,4 +1,4 @@
-package Client;
+package ClientServerProject;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -13,6 +13,7 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
@@ -33,6 +34,7 @@ public class ClientGUI extends JFrame {
 	private ControlPanel cp;
 	private LoginPanel lp;
 	private RegisterPanel rp;
+	private DisconnectPanel dp;
 	private ClientGUI parent;
 	private ChangePWPanel cpwp;
 	private RecoverPWPanel rpwp;
@@ -92,7 +94,6 @@ public class ClientGUI extends JFrame {
 					jf.setSize(512, 300);
 					jf.add(lp);
 					jf.setVisible(true);
-
 				}
 			});
 			JButton registerButton = new JButton("Register");
@@ -106,7 +107,12 @@ public class ClientGUI extends JFrame {
 			JButton disconnectButton = new JButton("Disconnect");
 			disconnectButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-
+					DisconnectPanel dp = new DisconnectPanel();
+					JFrame jf = new JFrame();
+					jf.setSize(512, 300);
+					jf.add(dp);
+					jf.setVisible(true);
+					jf.setAlwaysOnTop(true);
 				}
 			});
 
@@ -156,6 +162,15 @@ public class ClientGUI extends JFrame {
 					jf.add(lip);
 					jf.setVisible(true);
 					jf.setAlwaysOnTop(true);
+					try
+					{
+//						System.out.println(username.getText());
+						ClientHandler.LogInUser(username.getText());
+					} catch (SQLException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			});
 
@@ -205,6 +220,14 @@ public class ClientGUI extends JFrame {
 			submitButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					System.out.println("Submitted");
+					try
+					{
+						ClientHandler.RegisterUser(username.getText(), password.getText(), email.getText());
+					} catch (SQLException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			});
 
@@ -246,6 +269,12 @@ public class ClientGUI extends JFrame {
 			disconnectButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					System.out.print("Disconnected");
+					DisconnectPanel dp = new DisconnectPanel();
+					JFrame jf = new JFrame();
+					jf.setSize(512, 300);
+					jf.add(dp);
+					jf.setVisible(true);
+					jf.setAlwaysOnTop(true);
 
 				}
 			});
@@ -295,6 +324,33 @@ public class ClientGUI extends JFrame {
 			submitButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					System.out.println("Email Has Been Sent");
+				}
+			});
+
+			this.add(user);
+			this.add(username);
+			this.add(submitButton);
+
+		}
+	}
+	
+	public class DisconnectPanel extends JPanel {
+		public DisconnectPanel() {
+			setLayout(new GridLayout(10, 1, 2, 2));
+
+			JLabel user = new JLabel("Username");
+			JTextField username = new JTextField();
+			JButton submitButton = new JButton("Submit");
+			submitButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					try
+					{
+						ClientHandler.Disconnect(username.getText());
+					} catch (SQLException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			});
 

@@ -1,91 +1,133 @@
-package BasicClientServer;
+package ClientServerProject;
 
-public class messages{
+public class messages {
 
-	String message;
-	String test;
+	//Case: user connects to server
+	String failedConnection = "Connection Faild, please try again";
+	String serverDown = "the server is currently down";
+	
+	//Case: user disconnects from server
+	String disconnected = "Dissconnceted successfully";
+	
+	
+	//Case: user registers new account (client side)
+	String invalidUser = "Invalid username";
+	String invalidPwd = "Password entered is invalid";
+	String invalidEmai = "Email address is invalid";
+	String registered = "The account is registered successfully";
+	
+	//Case: user register new account (server side)
+	String usernameTaken = "Username not available";
+	
+	
+	//Case: User logs in 
+	String notFound = "Username does not exist in database";
+	String locked = "Account is locked ";
+	String wrongPwd = "Wrong password";
+	String loggedIn = "You are succefully logged in";
+	
+	//Case: User logs out
+	String loggedOut = "You have logged out successfully";
+
+	
+	//Case: user accesses system database 
+	String accessDB = "You can now access system database";
+	
+	
+	//Case: user changes pwd 
+	String enterNewPwd = "Enter new password";
+	String pwdChanged = "Password has been changed successfully";
+	// --- for the case when password is not correct, use the invalidPwd string 
+	
+	
+	//Case: user password recovery 
+	// notFound;
+	// locked;
+	String emailSent = " Check your inbox for the temporary password. We recommend that you change the password when you log in";
+
+
 	public String getFailedConnection() {
-		return message = "Connection Faild, please try again";
+		return failedConnection;
 	}
 
 
 	public String getServerDown() {
-		return message = "the server is currently down";
+		return serverDown;
 	}
 
 
 	public String getDisconnected() {
-		return message = "Dissconnceted successfully";
+		return disconnected;
 	}
 
 
 	public String getInvalidUser() {
-		return message = "Invalid username";
+		return invalidUser;
 	}
 
 
 	public String getInvalidPwd() {
-		return message = "Password entered is invalid";
+		return invalidPwd;
 	}
 
 
 	public String getInvalidEmai() {
-		return message = "Email address is invalid";
+		return invalidEmai;
 	}
 
 
 	public String getRegistered() {
-		return message = "The account is registered successfully";
+		return registered;
 	}
 
 
 	public String getUsernameTaken() {
-		return message = "Username not available";
+		return usernameTaken;
 	}
 
 
 	public String getNotFound() {
-		return message = "Username does not exist in database";
+		return notFound;
 	}
 
 
 	public String getLocked() {
-		return message = "Account is locked ";
+		return locked;
 	}
 
 
 	public String getWrongPwd() {
-		return message = "Wrong password";
+		return wrongPwd;
 	}
 
 
 	public String getLoggedIn() {
-		return message = "You are succefully logged in";
+		return loggedIn;
 	}
 
 
 	public String getLoggedOut() {
-		return message = "You have logged out successfully" ;
+		return loggedOut;
 	}
 
 
 	public String getAccessDB() {
-		return message = "You can now access system database";
+		return accessDB;
 	}
 
 
 	public String getEnterNewPwd() {
-		return message = "Enter new password";
+		return enterNewPwd;
 	}
 
 
 	public String getPwdChanged() {
-		return message = "Password has been changed successfully";
+		return pwdChanged;
 	}
 
 
 	public String getEmailSent() {
-		return message = " Check your inbox for the temporary password. We recommend that you change the password when you log in";
+		return emailSent;
 	}
 	
 }
