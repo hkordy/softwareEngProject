@@ -1,4 +1,4 @@
-package softwareEngProject;
+package Client;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -17,9 +17,11 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.Timer;
@@ -31,7 +33,10 @@ public class ClientGUI extends JFrame {
 	private ControlPanel cp;
 	private LoginPanel lp;
 	private RegisterPanel rp;
-	private Client client;
+	private ClientGUI parent;
+	private ChangePWPanel cpwp;
+	private RecoverPWPanel rpwp;
+	private LoggedInPanel lip;
 
 	public ClientGUI(int height, int width) {
 
@@ -62,9 +67,10 @@ public class ClientGUI extends JFrame {
 		// -- show the frame on the screen
 		setVisible(true);
 		cp.setVisible(true);
-		lp.setVisible(false);
+//		lp.setVisible(false);
 		rp.setVisible(false);
 
+		parent = this;
 	}
 
 	// -- Inner class for control panel, also inherits from JPanel
@@ -77,38 +83,29 @@ public class ClientGUI extends JFrame {
 			JButton loginButton = new JButton("Login");
 			loginButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					lp.setVisible(true);
-					
-					rp.setVisible(false);
 
+					lp.setVisible(true);
+
+					rp.setVisible(false);
+					LoginPanel lp = new LoginPanel();
+					JFrame jf = new JFrame();
+					jf.setSize(512, 300);
+					jf.add(lp);
+					jf.setVisible(true);
 
 				}
 			});
 			JButton registerButton = new JButton("Register");
 			registerButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					lp.setEnabled(false);
-					rp.setEnabled(true);
+					lp.setVisible(false);
+					rp.setVisible(true);
 
 				}
 			});
 			JButton disconnectButton = new JButton("Disconnect");
 			disconnectButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					client.disconnect();
-
-				}
-			});
-			JButton connectButton = new JButton("Connect");
-			add(connectButton);
-			connectButton.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent actionEvent) {
-					client = new Client();
-					connectButton.setEnabled(false);
-					disconnectButton.setEnabled(true);
-					loginButton.setEnabled(true);
-					registerButton.setEnabled(true);
 
 				}
 			});
@@ -117,11 +114,6 @@ public class ClientGUI extends JFrame {
 			add(loginButton);
 			add(registerButton);
 			add(disconnectButton);
-			disconnectButton.setEnabled(false);
-			loginButton.setEnabled(false);
-			registerButton.setEnabled(false);
-			add(connectButton);
-
 
 		}
 
@@ -135,18 +127,58 @@ public class ClientGUI extends JFrame {
 
 		public LoginPanel() {
 
-			setLayout(new GridLayout(20, 1, 2, 2));
+			setLayout(new GridLayout(10, 1, 2, 2));
 
 			JLabel user = new JLabel("Username");
 			JLabel pw = new JLabel("Password");
 
 			JTextField username = new JTextField();
-			JTextField password = new JTextField();
+			JPasswordField password = new JPasswordField();
+
+			JCheckBox seepw = new JCheckBox("See Password");
+			seepw.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					if (seepw.isSelected()) {
+						password.setEchoChar((char) 0);
+					} else {
+						password.setEchoChar('*');
+					}
+				}
+			});
+
+			JButton submitButton = new JButton("Submit");
+			submitButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					System.out.println("Submitted");
+					LoggedInPanel lip = new LoggedInPanel();
+					JFrame jf = new JFrame();
+					jf.setSize(512, 300);
+					jf.add(lip);
+					jf.setVisible(true);
+					jf.setAlwaysOnTop(true);
+				}
+			});
+
+			JButton recoverButton = new JButton("Recover Password");
+			recoverButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					RecoverPWPanel rpwp = new RecoverPWPanel();
+					JFrame jf = new JFrame();
+					jf.setSize(512, 300);
+					jf.add(rpwp);
+					jf.setVisible(true);
+					jf.setAlwaysOnTop(true);
+
+				}
+			});
 
 			this.add(user);
 			this.add(username);
 			this.add(pw);
 			this.add(password);
+			this.add(seepw);
+			this.add(submitButton);
+			this.add(recoverButton);
 
 		}
 
@@ -169,7 +201,12 @@ public class ClientGUI extends JFrame {
 			JTextField username = new JTextField();
 			JTextField password = new JTextField();
 			JTextField email = new JTextField();
-
+			JButton submitButton = new JButton("Submit");
+			submitButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					System.out.println("Submitted");
+				}
+			});
 
 			this.add(em);
 			this.add(email);
@@ -177,6 +214,7 @@ public class ClientGUI extends JFrame {
 			this.add(username);
 			this.add(pw);
 			this.add(password);
+			this.add(submitButton);
 
 		}
 
@@ -185,6 +223,86 @@ public class ClientGUI extends JFrame {
 			return new Dimension(300, 300);
 		}
 
+	}
+
+	public class LoggedInPanel extends JPanel {
+
+		public LoggedInPanel() {
+
+			JButton changepwButton = new JButton("Change Password");
+			changepwButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					ChangePWPanel cpwp = new ChangePWPanel();
+					JFrame jf = new JFrame();
+					jf.setSize(512, 300);
+					jf.add(cpwp);
+					jf.setVisible(true);
+					jf.setAlwaysOnTop(true);
+
+				}
+			});
+
+			JButton disconnectButton = new JButton("Disconnect");
+			disconnectButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					System.out.print("Disconnected");
+
+				}
+			});
+
+			this.add(changepwButton);
+			this.add(disconnectButton);
+		}
+	}
+
+	public class ChangePWPanel extends JPanel {
+		public ChangePWPanel() {
+
+			setLayout(new GridLayout(10, 1, 2, 2));
+
+			JLabel old = new JLabel("Old Password");
+			JLabel new1 = new JLabel("New Password");
+			JLabel new2 = new JLabel("New Password (Retype)");
+			JTextField oldpw = new JTextField();
+			JTextField newpw1 = new JTextField();
+			JTextField newpw2 = new JTextField();
+			JButton submitButton = new JButton("Submit");
+			submitButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					System.out.println("Submitted");
+				}
+			});
+
+			this.add(old);
+			this.add(oldpw);
+			this.add(new1);
+			this.add(newpw1);
+			this.add(new2);
+			this.add(newpw2);
+			this.add(submitButton);
+
+		}
+
+	}
+
+	public class RecoverPWPanel extends JPanel {
+		public RecoverPWPanel() {
+			setLayout(new GridLayout(10, 1, 2, 2));
+
+			JLabel user = new JLabel("Username");
+			JTextField username = new JTextField();
+			JButton submitButton = new JButton("Submit");
+			submitButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					System.out.println("Email Has Been Sent");
+				}
+			});
+
+			this.add(user);
+			this.add(username);
+			this.add(submitButton);
+
+		}
 	}
 
 	public static void main(String[] args) {
