@@ -1,4 +1,4 @@
-package Client;
+package softwareEngProject;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -37,6 +37,7 @@ public class ClientGUI extends JFrame {
 	private ChangePWPanel cpwp;
 	private RecoverPWPanel rpwp;
 	private LoggedInPanel lip;
+	private Client client;
 
 	public ClientGUI(int height, int width) {
 
@@ -73,6 +74,13 @@ public class ClientGUI extends JFrame {
 		parent = this;
 	}
 
+/*	public String displayMessage(String message)
+	{
+		JTextField displayed = new JTextField(message);
+
+	}*/
+
+
 	// -- Inner class for control panel, also inherits from JPanel
 	public class ControlPanel extends JPanel {
 
@@ -104,16 +112,32 @@ public class ClientGUI extends JFrame {
 				}
 			});
 			JButton disconnectButton = new JButton("Disconnect");
+			JButton connectButton = new JButton("Connect");
 			disconnectButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
+					client.disconnect();
+					disconnectButton.setEnabled(false);
+					connectButton.setEnabled(true);
 
 				}
 			});
 
+
+			connectButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent actionEvent) {
+					client = new Client();
+					connectButton.setEnabled(false);
+					disconnectButton.setEnabled(true);
+				}
+			});
+
 			// -- add all buttons
+			add(connectButton);
 			add(loginButton);
 			add(registerButton);
 			add(disconnectButton);
+			disconnectButton.setEnabled(false);
 
 		}
 

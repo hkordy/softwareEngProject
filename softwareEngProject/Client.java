@@ -7,8 +7,6 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import static softwareEngProject.MessageEnum.FAILEDIO;
-
 public class Client {
 
 	// -- port and host name of server
@@ -38,6 +36,7 @@ public class Client {
 	private BufferedReader datain;
 	private DataOutputStream dataout;
 
+    public messages message = new messages();
 	  	
 	public Client ()
 	{
@@ -49,11 +48,11 @@ public class Client {
 			datain = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			dataout = new DataOutputStream(socket.getOutputStream());
 		} catch (UnknownHostException e) {
-			System.out.println("Host " + HOST + " at port " + PORT + " is unavailable.");
+            message.getServerUnavailable();
 			System.exit(1);
 		} catch (IOException e) {
-
-			System.out.println("Unable to create I/O streams.");
+			displayMessage(message.getServerDown());
+			message.getServerDown();
 			System.exit(1);
 		}
 		

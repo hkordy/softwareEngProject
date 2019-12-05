@@ -21,8 +21,9 @@ public class Server {
 			
 	// -- list of active client threads by ID number
 	private Vector<ClientHandler> clientconnections;
-	
-	
+
+	private serverGUI sGUI;
+
 	public int getPort()
 	{
 		return PORT;
@@ -55,8 +56,6 @@ public class Server {
 		System.out.println("SERVER: connection received for id " + nextId + "\n");
 		++nextId;
 
-		new serverGUI();
-
 	}
 	
 		
@@ -88,7 +87,7 @@ public class Server {
 		try {
 			// -- open the server socket
 			serversocket = new ServerSocket(getPort());
-			
+			new serverGUI();
 			// -- server runs until we manually shut it down
 			while (true) {
 					// -- block until a client comes along
@@ -104,8 +103,8 @@ public class Server {
 		catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);
-			
 		}
+
 	}
 	
 	
@@ -114,6 +113,9 @@ public class Server {
 		// -- instantiate the server anonymously
 		//    no need to keep a reference to the object since it will run in its own thread
 		new Server();
+
+
+
 
 		
 	}

@@ -1,3 +1,4 @@
+/*
 package softwareEngProject;
 
 import java.text.SimpleDateFormat;
@@ -76,3 +77,4 @@ public class SendEmailUsingGMailSMTP {
         }
     }
 }
+*/
