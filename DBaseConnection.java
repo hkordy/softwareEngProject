@@ -1,4 +1,4 @@
-package MySQLDemo;
+package ClientServerProject;
 
 // -- download MySQL from: http://dev.mysql.com/downloads/
 //    Community Server version
@@ -63,48 +63,48 @@ public class DBaseConnection {
             stmt = conn.createStatement();
             rset = stmt.executeQuery("SELECT VERSION()");
 
-            if (rset.next()) {
-                System.out.println(rset.getString(1));
-            }
-            
-            String uname, pword, emailaddr;
-        	Scanner kb = new Scanner(System.in);
-            do {
-            	System.out.print("Username: ");
-            	uname = kb.next();
-            	System.out.print("Password: ");
-            	pword = kb.next();
-            	System.out.print("Email address: ");
-            	emailaddr = kb.next();
-            	int lock = 0;
-            	boolean loggedin = false;
-            	if (!uname.equals("999")) {
-                    // -- insert record into database
-                    String insert = "insert into users values('" + uname + "', '" + pword + "', '" + emailaddr + "', " + lock + ", " + (loggedin ? 1 : 0) + ");";
-                    System.out.println(insert);
-                    stmt.executeUpdate(insert);            		
-            	}
-            } while (!uname.equals("999"));
-            kb.close();
-            
-            // -- retrieve record(s) from database (csc335users) table (users)
-            String command = "SELECT * FROM users;";
-            System.out.println(command);
-            // -- the query will return a ResultSet
-            rset = stmt.executeQuery(command);
-            printResultSet();
-            
-            // -- change locked to 1 for username username1
-            String update = "update users set locked='1' where username='username1';";
-            stmt.executeUpdate(update);
-
-            // -- retrieve record(s) from database (csc335users) table (users)
-            command = "SELECT * FROM users;";
-            System.out.println(command);
-            
-            // -- the query will return a ResultSet
-            rset = stmt.executeQuery(command);
-            printResultSet();
+//            if (rset.next()) {
+//                System.out.println(rset.getString(1));
+//            }
+//            
+//            String uname, pword, emailaddr;
+//        	Scanner kb = new Scanner(System.in);
+//            do {
+//            	System.out.print("Username: ");
+//            	uname = kb.next();
+//            	System.out.print("Password: ");
+//            	pword = kb.next();
+//            	System.out.print("Email address: ");
+//            	emailaddr = kb.next();
+//            	int lock = 0;
+//            	boolean loggedin = false;
+//            	if (!uname.equals("999")) {
+//                    // -- insert record into database
+//                    String insert = "insert into users values('" + uname + "', '" + pword + "', '" + emailaddr + "', " + lock + ", " + (loggedin ? 1 : 0) + ");";
+//                    System.out.println(insert);
+//                    stmt.executeUpdate(insert);            		
+//            	}
+//            } while (!uname.equals("999"));
+//            kb.close();
+//            
+//            // -- retrieve record(s) from database (csc335users) table (users)
+//            String command = "SELECT * FROM users;";
+//            System.out.println(command);
+//            // -- the query will return a ResultSet
+//            rset = stmt.executeQuery(command);
+//            printResultSet(rset);
+//            
+//            // -- change locked to 1 for username username1
+//            String update = "update users set locked='1' where username='username1';";
+//            stmt.executeUpdate(update);
+//
+//            // -- retrieve record(s) from database (csc335users) table (users)
+//            command = "SELECT * FROM users;";
+//            System.out.println(command);
+//            
+//            // -- the query will return a ResultSet
+//            rset = stmt.executeQuery(command);
+//            printResultSet(rset);
             
 		} catch (SQLException ex) {
 			// handle any errors
@@ -115,13 +115,14 @@ public class DBaseConnection {
 
 	}
 	
-	public void printResultSet()
+	public void printResultSet(ResultSet rset)
 	{
 		try {
 	        //    the metadata tells us how many columns in the ResultSet
 	        ResultSetMetaData rsmd = rset.getMetaData();
 	        int numberOfColumns = rsmd.getColumnCount();
-	        System.out.println("columns: " + numberOfColumns);
+	        System.out.println("Database:");
+//	        System.out.println("columns: " + numberOfColumns);
 	        
 	        // -- iterate through the ResultSet one row at a time
 	        //    Note that the ResultSet starts at index 1
@@ -140,6 +141,16 @@ public class DBaseConnection {
 			System.out.println("VendorError: " + ex.getErrorCode());
 		}
 		
+	}
+
+	public Statement getStmt()
+	{
+		return stmt;
+	}
+
+	public ResultSet getRset()
+	{
+		return rset;
 	}
 
 	/**

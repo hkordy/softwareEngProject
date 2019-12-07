@@ -1,4 +1,4 @@
-package EmailDemo;
+package ClientServerProject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -1,4 +1,4 @@
-package BasicClientServer;
+package ClientServerProject;
 
 public class messages {
 
