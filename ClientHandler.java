@@ -10,9 +10,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-
-
-
 public class ClientHandler extends Thread {
 	private boolean go;
 	private String name;
@@ -29,9 +26,6 @@ public class ClientHandler extends Thread {
 	//    it will be set at time of construction
 	private Server server;
 	
-
-
-
 	public ClientHandler (int id, Socket socket, Server server) 
 	{
 		this.server = server;
@@ -60,18 +54,23 @@ public class ClientHandler extends Thread {
 		return name;
 	}
 	
-	public static void LogInUser(String name) throws SQLException
+	public static void LogInUser(String uname, String pwd) throws SQLException
 	{
 		DBaseConnection dbc = new DBaseConnection();
 		Statement stmt = dbc.getStmt();
 		ResultSet rset = dbc.getRset();
-		//rset = stmt.executeQuery("SELECT * FROM users");
-		//dbc.printResultSet(rset);
-		//ResultSetMetaData rsmd = rset.getMetaData();
-		String update = "update users set logged='1' where username='" + name + "';";
-        stmt.executeUpdate(update);
-        rset = stmt.executeQuery("SELECT * FROM users");
-        dbc.printResultSet(rset);
+		if(passwordMatch(uname, pwd) == true)
+		{
+			System.out.println("Successfully logged in user " + uname);
+			String update = "update users set logged='1' where username='" + uname + "';";
+	        stmt.executeUpdate(update);
+	        rset = stmt.executeQuery("SELECT * FROM users");
+	        dbc.printResultSet(rset);
+		}
+		else 
+		{
+			System.out.println("Could not log in user " + uname);
+		}
 	}
 	
 	public static void RegisterUser(String uname, String pword, String emailaddr) throws SQLException
@@ -79,11 +78,7 @@ public class ClientHandler extends Thread {
 		DBaseConnection dbc = new DBaseConnection();
 		Statement stmt = dbc.getStmt();
 		ResultSet rset = dbc.getRset();
-		//rset = stmt.executeQuery("SELECT * FROM users");
-		//dbc.printResultSet(rset);
-		//ResultSetMetaData rsmd = rset.getMetaData();
 		String insert = "insert into users values('" + uname + "', '" + pword + "', '" + emailaddr + "', " + 0 + ", " + 0 + ");";
-//      System.out.println(insert);
         stmt.executeUpdate(insert);   
         rset = stmt.executeQuery("SELECT * FROM users");
         dbc.printResultSet(rset);
@@ -94,16 +89,74 @@ public class ClientHandler extends Thread {
 		DBaseConnection dbc = new DBaseConnection();
 		Statement stmt = dbc.getStmt();
 		ResultSet rset = dbc.getRset();
-		//rset = stmt.executeQuery("SELECT * FROM users");
-		//dbc.printResultSet(rset);
-		//ResultSetMetaData rsmd = rset.getMetaData();
 		String update = "update users set logged='0' where username='" + uname + "';";
         stmt.executeUpdate(update);
         System.out.println("Username " + uname + " is now disconnected");
         rset = stmt.executeQuery("SELECT * FROM users");
         dbc.printResultSet(rset);
 	}
-
+	
+	// checks in database for valid uname/pwd combo
+	public static boolean passwordMatch(String uname, String pwd) throws SQLException
+	{
+		DBaseConnection dbc = new DBaseConnection();
+		Statement stmt = dbc.getStmt();
+		ResultSet rset = dbc.getRset();
+        rset = stmt.executeQuery("SELECT * FROM users");
+        ResultSetMetaData rsmd = rset.getMetaData();
+        int numberOfColumns = rsmd.getColumnCount();
+        while (rset.next()) {
+        	// -- loop through the columns of the ResultSet
+        	for (int i = 1; i < numberOfColumns; ++i) {
+        		if(uname.equals(rset.getString(1))) // uname matches
+        		{
+        			System.out.println("username is in database");
+        			if(pwd.equals(rset.getString(2))) // pwd matches 
+        			{
+        				System.out.println("password matches username in database");
+        				return true;
+        			}
+        		}
+        	}
+        }
+        System.out.println("password does not match username in database");
+		return false; 
+	}
+	
+	public static void passwordChange(String uname, String oldPwd, String newPwd) throws SQLException
+	{
+		if(passwordMatch(uname, oldPwd) == true)
+		{
+			System.out.println("Changing password...");
+			DBaseConnection dbc = new DBaseConnection();
+			Statement stmt = dbc.getStmt();
+			ResultSet rset = dbc.getRset();
+	        rset = stmt.executeQuery("SELECT * FROM users");
+	        ResultSetMetaData rsmd = rset.getMetaData();
+	        int numberOfColumns = rsmd.getColumnCount();
+	        while (rset.next()) {
+	        	// -- loop through the columns of the ResultSet
+	        	for (int i = 1; i < numberOfColumns; ++i) {
+	        		if(rset.getString(1) == uname)
+	        		{
+	        			if(rset.getString(2) == oldPwd)
+	        			{
+	        				System.out.println("here");
+	        				String update = "update users set password='" + newPwd + "' where username='" + uname + "';";
+	        		        stmt.executeUpdate(update);
+	        			}
+	        		}
+	        	}
+	        }
+	        System.out.println("Password successfully changed");
+	        dbc.printResultSet(rset);
+		}
+        else
+        {
+        	System.out.println("Incorrect old password. Cannot change password.");
+        }
+    
+	}
 
 	public void run () {
 		// -- server thread runs until the client terminates the connection

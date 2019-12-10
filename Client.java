@@ -23,7 +23,7 @@ public class Client {
      Subnet Mask . . . . . . . . . . . : 255.255.240.0
      Default Gateway . . . . . . . . . : 199.107.210.2
 	 */
-    private static final String HOST = "localhost";//"199.107.222.115";//"localhost";//"127.0.0.1";
+    private static final String HOST = "10.100.15.222";//"199.107.222.115";//"localhost";//"127.0.0.1";
 	// -- the actual host IP address of the machine can
 	//    be found using ipconfig from a command console
 	// private final String HOST = "192.168.20.4";

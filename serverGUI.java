@@ -113,32 +113,30 @@ public class serverGUI extends JFrame
 					{
 						rset = stmt.executeQuery("SELECT * FROM users");
 						dbc.printResultSet(rset);
+						rset = stmt.executeQuery("SELECT * FROM users");
 						ResultSetMetaData rsmd = rset.getMetaData();
 						int numberOfColumns = rsmd.getColumnCount();
 						String loggedInUsers = "";
 						
 						while (rset.next()) {
 				        	// -- loop through the columns of the ResultSet
-				        	for (int i = 1; i < numberOfColumns; ++i) {
-				        		System.out.print(rset.getString(i) + " ");
-				        	}
-				        	if(rset.getString(5) == "1")
+				        	if(rset.getString(5).equals("1"))
 				        	{
 				        		logged++; // increment logged in users 
 				        		loggedInUsers += (rset.getString(1) + " "); // add username to user list
 				        	}
-				        	if(rset.getString(4) == "1")
+				        	if(rset.getString(4).equals("1"))
 				        	{
 				        		locked++;
 				        	}
-				        	System.out.println(rset.getString(numberOfColumns));
 				        }
 						
 						users.add("User #" + String.valueOf(counter++));
-						vp.registered.setText(Integer.toString(numberOfColumns));
+						vp.registered.setText(Integer.toString(numberOfColumns+1));
 						vp.loggedIn.setText(String.valueOf(logged));
 						vp.lockedOut.setText(String.valueOf(locked));
 						vp.users.setText(loggedInUsers);
+					
 					} catch (SQLException e)
 					{
 						// TODO Auto-generated catch block

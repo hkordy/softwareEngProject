@@ -39,8 +39,11 @@ public class ClientGUI extends JFrame {
 	private ChangePWPanel cpwp;
 	private RecoverPWPanel rpwp;
 	private LoggedInPanel lip;
+	private Client client;
 
 	public ClientGUI(int height, int width) {
+		
+		client = new Client();
 
 		// -- set frame title
 		setTitle("Client GUI");
@@ -156,7 +159,7 @@ public class ClientGUI extends JFrame {
 			submitButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					System.out.println("Submitted");
-					LoggedInPanel lip = new LoggedInPanel();
+					LoggedInPanel lip = new LoggedInPanel(username.getText());
 					JFrame jf = new JFrame();
 					jf.setSize(512, 300);
 					jf.add(lip);
@@ -164,8 +167,8 @@ public class ClientGUI extends JFrame {
 					jf.setAlwaysOnTop(true);
 					try
 					{
-//						System.out.println(username.getText());
-						ClientHandler.LogInUser(username.getText());
+						System.out.println("Attempting to log in " + username.getText());
+						ClientHandler.LogInUser(username.getText(), password.getText());
 					} catch (SQLException e)
 					{
 						// TODO Auto-generated catch block
@@ -250,12 +253,12 @@ public class ClientGUI extends JFrame {
 
 	public class LoggedInPanel extends JPanel {
 
-		public LoggedInPanel() {
+		public LoggedInPanel(String username) {
 
 			JButton changepwButton = new JButton("Change Password");
 			changepwButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					ChangePWPanel cpwp = new ChangePWPanel();
+					ChangePWPanel cpwp = new ChangePWPanel(username);
 					JFrame jf = new JFrame();
 					jf.setSize(512, 300);
 					jf.add(cpwp);
@@ -265,10 +268,9 @@ public class ClientGUI extends JFrame {
 				}
 			});
 
-			JButton disconnectButton = new JButton("Disconnect");
+			JButton disconnectButton = new JButton("Log out");
 			disconnectButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					System.out.print("Disconnected");
 					DisconnectPanel dp = new DisconnectPanel();
 					JFrame jf = new JFrame();
 					jf.setSize(512, 300);
@@ -285,7 +287,7 @@ public class ClientGUI extends JFrame {
 	}
 
 	public class ChangePWPanel extends JPanel {
-		public ChangePWPanel() {
+		public ChangePWPanel(String username) {
 
 			setLayout(new GridLayout(10, 1, 2, 2));
 
@@ -298,7 +300,14 @@ public class ClientGUI extends JFrame {
 			JButton submitButton = new JButton("Submit");
 			submitButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					System.out.println("Submitted");
+					try
+					{
+						ClientHandler.passwordChange(username, oldpw.getText(), newpw1.getText());
+					} catch (SQLException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}					
 				}
 			});
 
@@ -346,6 +355,7 @@ public class ClientGUI extends JFrame {
 					try
 					{
 						ClientHandler.Disconnect(username.getText());
+						client.disconnect();
 					} catch (SQLException e)
 					{
 						// TODO Auto-generated catch block

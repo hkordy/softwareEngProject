@@ -19,6 +19,7 @@ public class Server {
 	// -- list of active client threads by ID number
 	private Vector<ClientHandler> clientconnections;
 	
+	private serverGUI sGUI;
 	
 	public int getPort()
 	{
@@ -76,13 +77,12 @@ public class Server {
 
 	}
 
-
 	private void listen ()
 	{
 		try {
 			// -- open the server socket
 			serversocket = new ServerSocket(getPort());
-			
+			new serverGUI();
 			// -- server runs until we manually shut it down
 			while (true) {
 					// -- block until a client comes along
