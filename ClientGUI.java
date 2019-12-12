@@ -1,4 +1,4 @@
-package ClientServerProject;
+package Client;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -13,7 +13,6 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
@@ -27,6 +26,9 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 
+import java.util.regex.Matcher; 
+import java.util.regex.Pattern; 
+
 public class ClientGUI extends JFrame {
 
 	// -- inherit from JFrame so that we can add custom functionality
@@ -34,16 +36,12 @@ public class ClientGUI extends JFrame {
 	private ControlPanel cp;
 	private LoginPanel lp;
 	private RegisterPanel rp;
-	private DisconnectPanel dp;
 	private ClientGUI parent;
 	private ChangePWPanel cpwp;
 	private RecoverPWPanel rpwp;
 	private LoggedInPanel lip;
-	private Client client;
 
 	public ClientGUI(int height, int width) {
-		
-		client = new Client();
 
 		// -- set frame title
 		setTitle("Client GUI");
@@ -97,6 +95,7 @@ public class ClientGUI extends JFrame {
 					jf.setSize(512, 300);
 					jf.add(lp);
 					jf.setVisible(true);
+
 				}
 			});
 			JButton registerButton = new JButton("Register");
@@ -110,12 +109,7 @@ public class ClientGUI extends JFrame {
 			JButton disconnectButton = new JButton("Disconnect");
 			disconnectButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					DisconnectPanel dp = new DisconnectPanel();
-					JFrame jf = new JFrame();
-					jf.setSize(512, 300);
-					jf.add(dp);
-					jf.setVisible(true);
-					jf.setAlwaysOnTop(true);
+
 				}
 			});
 
@@ -142,6 +136,7 @@ public class ClientGUI extends JFrame {
 			JLabel pw = new JLabel("Password");
 
 			JTextField username = new JTextField();
+
 			JPasswordField password = new JPasswordField();
 
 			JCheckBox seepw = new JCheckBox("See Password");
@@ -158,22 +153,15 @@ public class ClientGUI extends JFrame {
 			JButton submitButton = new JButton("Submit");
 			submitButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
+
 					System.out.println("Submitted");
-					LoggedInPanel lip = new LoggedInPanel(username.getText());
+					LoggedInPanel lip = new LoggedInPanel();
 					JFrame jf = new JFrame();
 					jf.setSize(512, 300);
 					jf.add(lip);
 					jf.setVisible(true);
 					jf.setAlwaysOnTop(true);
-					try
-					{
-						System.out.println("Attempting to log in " + username.getText());
-						ClientHandler.LogInUser(username.getText(), password.getText());
-					} catch (SQLException e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+
 				}
 			});
 
@@ -217,19 +205,39 @@ public class ClientGUI extends JFrame {
 			JLabel pw = new JLabel("Password");
 			JLabel em = new JLabel("Email");
 			JTextField username = new JTextField();
-			JTextField password = new JTextField();
+			JPasswordField password = new JPasswordField();
 			JTextField email = new JTextField();
+			JCheckBox seepw = new JCheckBox("See Password");
+			seepw.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					if (seepw.isSelected()) {
+						password.setEchoChar((char) 0);
+					} else {
+						password.setEchoChar('*');
+					}
+				}
+			});
 			JButton submitButton = new JButton("Submit");
 			submitButton.addActionListener(new ActionListener() {
+
 				public void actionPerformed(ActionEvent arg0) {
-					System.out.println("Submitted");
-					try
-					{
-						ClientHandler.RegisterUser(username.getText(), password.getText(), email.getText());
-					} catch (SQLException e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+					String passText = new String(password.getPassword());
+					String emailText = new String(email.getText());
+					char[] pwd = password.getPassword();
+					if (EmailInvalid(emailText) == false) {
+						System.out.println("Invalid Email Entered");
+					}
+					if (pwd.length < 8) {
+						System.out.println("Password must contain at least 8 characters!");
+					}
+					if (PasswordSpecialCharInvalid(passText) == true) {
+						System.out.println("Password must contain a special character !,@,#,$,%,^,&,*");
+					}
+					if (PasswordCaseInvalid(passText) == true) {
+						System.out.println("Password must contain upper and lowercase letters");
+					}
+					else {
+						System.out.println("Submitted");
 					}
 				}
 			});
@@ -240,9 +248,52 @@ public class ClientGUI extends JFrame {
 			this.add(username);
 			this.add(pw);
 			this.add(password);
+			this.add(seepw);
 			this.add(submitButton);
 
 		}
+
+		public boolean PasswordSpecialCharInvalid(String s) {
+			if (s.contains("!") || s.contains("@") || s.contains("#") || s.contains("$") || s.contains("^")
+					|| s.contains("&") || s.contains("*")) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+
+		public boolean PasswordCaseInvalid(String s) {
+			char letter;
+			int upper = 0;
+			int lower = 0;
+			for (int i = 0; i < s.length(); ++i) {
+				letter = s.charAt(i);
+				if (Character.isLowerCase(letter)) {
+					++lower;
+				} else if (Character.isUpperCase(letter)) {
+					++upper;
+				}
+			}
+			if (upper == 0 || lower == 0) {
+				return true;
+			} else {
+				return false;
+			}
+
+		}
+
+		 public boolean EmailInvalid(String e) 
+		    { 
+		        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+ 
+		                            "[a-zA-Z0-9_+&*-]+)*@" + 
+		                            "(?:[a-zA-Z0-9-]+\\.)+[a-z" + 
+		                            "A-Z]{2,7}$"; 
+		                              
+		        Pattern pattern = Pattern.compile(emailRegex); 
+		        if (e == null) 
+		            return false; 
+		        return pattern.matcher(e).matches(); 
+		    } //taken from article on geeksforgeeks
 
 		public Dimension getPreferredSize() {
 
@@ -253,12 +304,12 @@ public class ClientGUI extends JFrame {
 
 	public class LoggedInPanel extends JPanel {
 
-		public LoggedInPanel(String username) {
+		public LoggedInPanel() {
 
 			JButton changepwButton = new JButton("Change Password");
 			changepwButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					ChangePWPanel cpwp = new ChangePWPanel(username);
+					ChangePWPanel cpwp = new ChangePWPanel();
 					JFrame jf = new JFrame();
 					jf.setSize(512, 300);
 					jf.add(cpwp);
@@ -268,15 +319,10 @@ public class ClientGUI extends JFrame {
 				}
 			});
 
-			JButton disconnectButton = new JButton("Log out");
+			JButton disconnectButton = new JButton("Disconnect");
 			disconnectButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					DisconnectPanel dp = new DisconnectPanel();
-					JFrame jf = new JFrame();
-					jf.setSize(512, 300);
-					jf.add(dp);
-					jf.setVisible(true);
-					jf.setAlwaysOnTop(true);
+					System.out.print("Disconnected");
 
 				}
 			});
@@ -287,7 +333,7 @@ public class ClientGUI extends JFrame {
 	}
 
 	public class ChangePWPanel extends JPanel {
-		public ChangePWPanel(String username) {
+		public ChangePWPanel() {
 
 			setLayout(new GridLayout(10, 1, 2, 2));
 
@@ -300,14 +346,7 @@ public class ClientGUI extends JFrame {
 			JButton submitButton = new JButton("Submit");
 			submitButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					try
-					{
-						ClientHandler.passwordChange(username, oldpw.getText(), newpw1.getText());
-					} catch (SQLException e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}					
+					System.out.println("Submitted");
 				}
 			});
 
@@ -333,34 +372,6 @@ public class ClientGUI extends JFrame {
 			submitButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					System.out.println("Email Has Been Sent");
-				}
-			});
-
-			this.add(user);
-			this.add(username);
-			this.add(submitButton);
-
-		}
-	}
-	
-	public class DisconnectPanel extends JPanel {
-		public DisconnectPanel() {
-			setLayout(new GridLayout(10, 1, 2, 2));
-
-			JLabel user = new JLabel("Username");
-			JTextField username = new JTextField();
-			JButton submitButton = new JButton("Submit");
-			submitButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					try
-					{
-						ClientHandler.Disconnect(username.getText());
-						client.disconnect();
-					} catch (SQLException e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
 				}
 			});
 
